@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -14,10 +15,12 @@ interface IForecast {
         direction: number;
         speed: number;
     };
-    sunrise: string;
-    sunset: string;
+    sun: {
+        sunrise: any;
+        sunset: any;
+        uv: number;
+    };
     date: any;
-    uv: number;
 }
 
 const App = () => {
@@ -55,14 +58,16 @@ const App = () => {
                         direction: res.data.daily.wind_speed_10m_max[0],
                         speed: res.data.daily.wind_direction_10m_dominant[0],
                     },
-                    sunrise: res.data.daily.sunrise[0],
-                    sunset: res.data.daily.sunset[0],
+                    sun: {
+                        sunrise: res.data.daily.sunrise[0].slice(-5),
+                        sunset: res.data.daily.sunset[0].slice(-5),
+                        uv: res.data.daily.uv_index_max[0],
+                    },
                     date: new Date(
                         res.data.daily.time[0].slice(0, 4),
-                        res.data.daily.time[0].slice(6, 7) -1,
+                        res.data.daily.time[0].slice(6, 7) - 1,
                         res.data.daily.time[0].slice(9, 10)
                     ),
-                    uv: res.data.daily.uv_index_max[0],
                 })
             );
     }, []);
@@ -76,6 +81,43 @@ const App = () => {
                 })}
             </h1>
             <h2>{forecast?.date.toLocaleString("ru", { weekday: "long" })}</h2>
+            <ul>
+                <li>
+                    Температура
+                    <ul>
+                        <li>минимальная {forecast?.temperature.min}°C</li>
+                        <li>максимальная {forecast?.temperature.max}°C</li>
+                    </ul>
+                </li>
+                <li>
+                    Осадки
+                    <ul>
+                        <li>вероятность {forecast?.precip.sum}%</li>
+                        {forecast?.precip.sum !== 0 ? (
+                            <li>
+                                длительность {forecast?.precip.duration} часов
+                            </li>
+                        ) : (
+                            <></>
+                        )}
+                    </ul>
+                </li>
+                <li>
+                    Ветер
+                    <ul>
+                        <li>скорость {forecast?.wind.speed}км/ч</li>
+                        <li>направление {forecast?.wind.direction}°</li>
+                    </ul>
+                </li>
+                <li>
+                    солнце
+                    <ul>
+                        <li>восход {forecast?.sun.sunrise}</li>
+                        <li>закат {forecast?.sun.sunset}</li>
+                        <li>uv {Math.round(forecast?.sun.uv)}</li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     );
 };
