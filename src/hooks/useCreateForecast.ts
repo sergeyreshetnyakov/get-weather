@@ -48,9 +48,11 @@ export const useCreateForecast = (data: any) => {
     };
 
     let dates: any[] = [];
+
     forecast.date.map((e: any) => {
-        dates.push(new Date(e.slice(0, 4), e.slice(6, 7) - 1, e.slice(9, 10)));
+        dates.push(new Date(e.slice(0, 4), e.slice(5, 7) - 1, e.slice(8, 10)));
     });
+    
     forecast.date = dates;
 
     return forecast;

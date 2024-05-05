@@ -1,24 +1,43 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useCreateForecast, type IForecast } from "./hooks/useCreateForecast";
-import { useState } from "react";
 import { useGetLocation } from "./hooks/useGetLocation";
 import { useFetchApi } from "./hooks/useFetchApi";
+import { useState } from "react";
+
+import Date from "./components/Date";
 
 const App = () => {
     const [forecast, setForecast] = useState<IForecast | undefined>();
-    const [day, setDay] = useState<number>(0)
+    const [ day, setDay ] = useState(0)
+
+    const handleNext = () => {
+        if(day !== 6) setDay(day + 1)
+        else setDay(0)
+    }
+    const handlePrevious = () => {
+        if(day !== 0) setDay(day - 1)
+        else setDay(6)
+    }
 
     useFetchApi(useGetLocation, useCreateForecast, setForecast)
-    
+
+    // <h1>
+    // {forecast?.date[day].toLocaleString("ru", {
+    //     month: "long",
+    //     day: "numeric",
+    // })}
+    // </h1>
+    // <h2>{forecast?.date[day].toLocaleString("ru", { weekday: "long" })}</h2>
     return (
-        <div>
-            <h1>
-                {forecast?.date[day].toLocaleString("ru", {
-                    month: "long",
-                    day: "numeric",
+        <div className="bg-black">
+            <Date
+                date={forecast?.date[day].toLocaleString("ru", {
+                    month: "long",day: "numeric"
                 })}
-            </h1>
-            <h2>{forecast?.date[day].toLocaleString("ru", { weekday: "long" })}</h2>
+                weekday={forecast?.date[day].toLocaleString("ru", { weekday: "long" })}
+                handleNext={handleNext}
+                handlePrevious={handlePrevious}
+                />
             <ul>
                 <li>
                     Температура
@@ -63,8 +82,6 @@ const App = () => {
                     </ul>
                 </li>
             </ul>
-            <button onClick={() => setDay(day - 1)}>previous</button>
-            <button onClick={() => setDay(day + 1)}>next</button>
         </div>
     );
 };
