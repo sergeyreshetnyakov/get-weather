@@ -11,5 +11,5 @@ export const useGetLocation = () => {
                 longitude: position.coords.longitude.toString(),
             })
         );
-    })
-}
+    });
+};

@@ -1,49 +1,57 @@
+/* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface IForecast {
     temperature: {
-        max: number;
-        min: number;
+        max: number[];
+        min: number[];
     };
     precip: {
-        duration: number;
-        sum: number;
+        duration: number[];
+        sum: number[];
     };
     wind: {
-        direction: number;
-        speed: number;
+        direction: number[];
+        speed: number[];
     };
     sun: {
-        sunrise: any;
-        sunset: any;
-        uv: number;
+        sunrise: any[];
+        sunset: any[];
+        uv: number[];
     };
     date: any;
 }
 
-export const useCreateForecast = (data) => {
+export const useCreateForecast = (data: any) => {
     const forecast: IForecast = {
         temperature: {
-            max: data.temperature_2m_max[0],
-            min: data.temperature_2m_min[0],
+            max: data.temperature_2m_max,
+            min: data.temperature_2m_min,
         },
         precip: {
-            duration: data.precipitation_hours[0],
-            sum: data.precipitation_sum[0],
+            duration: data.precipitation_hours,
+            sum: data.precipitation_sum,
         },
         wind: {
-            direction: data.wind_speed_10m_max[0],
-            speed: data.wind_direction_10m_dominant[0],
+            direction: data.wind_speed_10m_max,
+            speed: data.wind_direction_10m_dominant,
         },
         sun: {
-            sunrise: data.sunrise[0].slice(-5),
-            sunset: data.sunset[0].slice(-5),
-            uv: data.uv_index_max[0],
+            sunrise: data.sunrise.map((e: string) => {
+                e.slice(-5);
+            }),
+            sunset: data.sunset.map((e: string) => {
+                e.slice(-5);
+            }),
+            uv: data.uv_index_max,
         },
-        date: new Date(
-            data.time[0].slice(0, 4),
-            data.time[0].slice(6, 7) - 1,
-            data.time[0].slice(9, 10)
-        ),
+        date: data.time,
     };
+
+    let dates: any[] = [];
+    forecast.date.map((e: any) => {
+        dates.push(new Date(e.slice(0, 4), e.slice(6, 7) - 1, e.slice(9, 10)));
+    });
+    forecast.date = dates;
+
     return forecast;
 };
