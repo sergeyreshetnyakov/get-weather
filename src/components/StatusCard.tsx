@@ -3,17 +3,23 @@ interface IProps {
     name: string
     stat1: any
     stat2: any
-    statName1: string
-    statName2: string
+    statName1: string|any
+    statName2: string|any
+    measure1: string|any
+    measure2: string|any
+    icon: JSX.Element
 }
 
-const StatusCard = ({name, stat1, stat2, statName1, statName2}: IProps) => {
+const StatusCard = ({name, stat1, stat2, statName1, statName2, measure1, measure2, icon}: IProps) => {
     return (
-        <div>
-            <h1>{name}</h1>
-            <div>
-                <h2>{statName1}: {stat1}</h2>
-                <h2>{statName2}: {stat2}</h2>                
+        <div className="bg-white/30 backdrop-blur-xl inline-block rounded-lg p-3">
+            <div className="flex">
+            {icon}
+            <h1 className="flex pl-4 text-lg text-white font-bold"> {name}</h1>
+            </div>
+            <div className="pl-12 pr-3">
+                <h2 className="text-white flex">{statName1}: {stat1}{measure1}</h2>
+                <h2 className="text-white flex">{statName2}: {stat2}{measure2}</h2>                
             </div>
         </div>
 )}
