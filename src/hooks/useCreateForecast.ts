@@ -36,24 +36,29 @@ export const useCreateForecast = (data: any) => {
             speed: data.wind_direction_10m_dominant,
         },
         sun: {
-            sunrise: data.sunrise.map((e: string) => {
-                e.slice(-5);
-            }),
-            sunset: data.sunset.map((e: string) => {
-                e.slice(-5);
-            }),
+            sunrise: data.sunrise,
+            sunset: data.sunset,
             uv: data.uv_index_max,
         },
         date: data.time,
     };
 
     let dates: any[] = [];
+    let sunrises: string[] = [];
+    let sunsets: string[] = [];
 
     forecast.date.map((e: any) => {
         dates.push(new Date(e.slice(0, 4), e.slice(5, 7) - 1, e.slice(8, 10)));
     });
-    
+
+    forecast.sun.sunrise.map((e) => sunrises.push(e.slice(-5)));
+    forecast.sun.sunset.map((e) => sunsets.push(e.slice(-5)));
+
     forecast.date = dates;
+    forecast.sun.sunrise = sunrises;
+    forecast.sun.sunset = sunsets;
+
+    console.log(forecast?.sun.sunrise[0].slice(-5));
 
     return forecast;
 };
